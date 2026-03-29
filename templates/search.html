@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>🔍 Recherche</h1>
+<form method="GET" class="search-form">
+  <input type="text" name="q" value="{{ query }}" placeholder="sqli, xss, docker..." autofocus>
+  <button type="submit">Rechercher</button>
+</form>
+
+{% if query %}
+  <h2>Résultats pour "{{ query }}"</h2>
+  {% if results %}
+    <div class="writeup-list">
+      {% for w in results %}
+        <div class="card">
+          <h3><a href="{{ url_for('writeup', writeup_id=w.id) }}">{{ w.title }}</a></h3>
+          <div class="meta">Par {{ w.username }}</div>
+          <p>{{ w.content[:150] }}...</p>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>Aucun résultat pour "{{ query }}".</p>
+  {% endif %}
+{% endif %}
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="form-container wide">
+  <h1>✍️ Nouveau Write-up</h1>
+  <form method="POST">
+    <label>Titre</label>
+    <input type="text" name="title" placeholder="RootMe - SQL Injection..." required>
+    <label>Contenu</label>
+    <textarea name="content" rows="12" placeholder="Décris ta méthodologie, les outils utilisés, les étapes..." required></textarea>
+    <label>Tags (séparés par des virgules)</label>
+    <input type="text" name="tags" placeholder="sqli, xss, rootme, htb">
+    <button type="submit">Publier</button>
+  </form>
+</div>
+{% endblock %}

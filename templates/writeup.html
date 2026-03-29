@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<article class="writeup-detail">
+  <h1>{{ writeup.title }}</h1>
+  <div class="meta">
+    Par <a href="{{ url_for('profile', user_id=writeup.user_id) }}">{{ writeup.username }}</a>
+    — {{ writeup.created_at }}
+  </div>
+  {% if writeup.tags %}
+    <div class="tags">
+      {% for tag in writeup.tags.split(',') %}
+        <span class="tag">{{ tag.strip() }}</span>
+      {% endfor %}
+    </div>
+  {% endif %}
+  <div class="content">{{ writeup.content }}</div>
+</article>
+
+<section class="comments">
+  <h2>💬 Commentaires</h2>
+
+  {% for c in comments %}
+    <div class="comment">
+      <strong><a href="{{ url_for('profile', user_id=c.user_id) }}">{{ c.username }}</a></strong>
+      <span class="meta">— {{ c.created_at }}</span>
+      <!-- FAILLE XSS STOCKÉ : |safe désactive l'échappement Jinja2 -->
+      <p>{{ c.content | safe }}</p>
+    </div>
+  {% endfor %}
+
+  {% if session.user_id %}
+    <form method="POST" class="comment-form">
+      <label>Ajouter un commentaire</label>
+      <textarea name="comment" rows="4" placeholder="Ton commentaire..."></textarea>
+      <button type="submit">Publier</button>
+    </form>
+  {% else %}
+    <p><a href="{{ url_for('login') }}">Connecte-toi</a> pour commenter.</p>
+  {% endif %}
+</section>
+{% endblock %}

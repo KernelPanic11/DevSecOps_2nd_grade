@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>🔥 Derniers Write-ups</h1>
+<p class="subtitle">La connaissance se partage. Les failles aussi.</p>
+
+{% if writeups %}
+  <div class="writeup-list">
+    {% for w in writeups %}
+      <div class="card">
+        <h2><a href="{{ url_for('writeup', writeup_id=w.id) }}">{{ w.title }}</a></h2>
+        <div class="meta">
+          Par <a href="{{ url_for('profile', user_id=w.user_id) }}">{{ w.username }}</a>
+          — {{ w.created_at }}
+        </div>
+        <p>{{ w.content[:200] }}...</p>
+        {% if w.tags %}
+          <div class="tags">
+            {% for tag in w.tags.split(',') %}
+              <span class="tag">{{ tag.strip() }}</span>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <p>Aucun write-up pour l'instant. <a href="{{ url_for('new_writeup') }}">Sois le premier !</a></p>
+{% endif %}
+{% endblock %}
