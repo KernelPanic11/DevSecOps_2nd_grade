@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HackBoard {% if title %}– {{ title }}{% endif %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <nav class="navbar">
+    <a href="{{ url_for('index') }}" class="brand">💀 HackBoard</a>
+    <div class="nav-links">
+      <a href="{{ url_for('search') }}">🔍 Recherche</a>
+      {% if session.user_id %}
+        <a href="{{ url_for('new_writeup') }}">✍️ Nouveau write-up</a>
+        <a href="{{ url_for('profile', user_id=session.user_id) }}">👤 {{ session.username }}</a>
+        <a href="{{ url_for('logout') }}">Déconnexion</a>
+      {% else %}
+        <a href="{{ url_for('login') }}">Connexion</a>
+        <a href="{{ url_for('register') }}">Inscription</a>
+      {% endif %}
+    </div>
+  </nav>
+
+  <main class="container">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for msg in messages %}
+          <div class="alert">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer>
+    <p>HackBoard © 2025 — <em>Root or nothing.</em></p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="form-container">
+  <h1>🔐 Connexion</h1>
+  {% if error %}<div class="error">{{ error }}</div>{% endif %}
+  <form method="POST">
+    <label>Username</label>
+    <input type="text" name="username" placeholder="h4x0r" required>
+    <label>Mot de passe</label>
+    <input type="password" name="password" required>
+    <button type="submit">Connexion</button>
+  </form>
+  <p>Pas encore de compte ? <a href="{{ url_for('register') }}">S'inscrire</a></p>
+</div>
+{% endblock %}
