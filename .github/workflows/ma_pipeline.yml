@@ -25,24 +25,24 @@ jobs:
           #GITHUB_TOKEN: github_pat_29837294ihefg290jihE320jih
 
 
-  # # JOB 2 — Qualité du code
+  # JOB 2 — Qualité du code
 
-  # lint:
-  #   name: Linting (Flake8)
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v4
+  lint:
+    name: Linting (Flake8)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-  #     - name: Setup Python
-  #       uses: actions/setup-python@v5
-  #       with:
-  #         python-version: '3.11'
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
-  #     - name: Installer les dépendances
-  #       run: pip install flake8
+      - name: Installer les dépendances
+        run: pip install flake8
 
-  #     - name: Lancer Flake8
-  #       run: flake8 . --max-line-length=120 --exclude=__pycache__ || true
+      - name: Lancer Flake8
+        run: flake8 . --max-line-length=120 --exclude=__pycache__ || true
 
 
   # # JOB 3 — SAST (analyse statique)
