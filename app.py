@@ -233,4 +233,5 @@ if __name__ == "__main__":
     if not os.path.exists(DATABASE):
         init_db()
     # FAILLE : debug=True en production
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    # app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000)
