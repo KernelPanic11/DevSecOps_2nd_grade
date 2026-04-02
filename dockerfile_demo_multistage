@@ -13,7 +13,6 @@ RUN apt-get update && \
 RUN pip install --no-cache-dir -U pip setuptools wheel && \
     pip install --no-cache-dir -r requirements.txt
 
-# Copier le code source
 COPY . .
 
 # Option : Build binaire ou préparer l’app (si nécessaire)
@@ -30,11 +29,10 @@ USER appuser
 
 WORKDIR /app
 
-# Copier uniquement le nécessaire depuis le build
+# Copier l'artefact (notre "épée") depuis le build (la "forge")
 COPY --from=builder /app /app
 
 # Entrypoint unique
 ENTRYPOINT ["/usr/local/bin/python", "-m", "app.main"]
 
-# Optionnel : exposer port si web
 EXPOSE 8080
