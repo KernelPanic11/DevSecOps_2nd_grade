@@ -107,7 +107,8 @@ jobs:
 
       - name: Scanning Dockerfile
         uses: aquasecurity/trivy-action@0.69.3
-        run: trivy config --exit-code 0 Dockerfile \
+        run: |
+          trivy config --exit-code 0 Dockerfile \
           && trivy image .
 
 
@@ -144,30 +145,30 @@ jobs:
 
   # JOB 6 — Trivy (scan image Docker)
 
-  trivy:
-    name: Trivy (Image Scan)
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Scanner l'image avec Trivy
-        uses: aquasecurity/trivy-action@0.69.3
-        with:
-          image-ref: ${{ secrets.MON_DOCKERHUB_USERNAME }}/hackboard:${{ github.sha }}
-          format: table
-          severity: CRITICAL,HIGH
-          exit-code: 0  # ne bloque pas la pipeline pour l'instant
+  # trivy:
+  #   name: Trivy (Image Scan)
+  #   runs-on: ubuntu-latest
+  #   needs: build
+  #   steps:
+  #     - name: Scanner l'image avec Trivy
+  #       uses: aquasecurity/trivy-action@0.69.3
+  #       with:
+  #         image-ref: ${{ secrets.MON_DOCKERHUB_USERNAME }}/hackboard:${{ github.sha }}
+  #         format: table
+  #         severity: CRITICAL,HIGH
+  #         exit-code: 0  # ne bloque pas la pipeline pour l'instant
 
-      - name: Rapport Trivy en SARIF
-        uses: aquasecurity/trivy-action@0.69.3
-        with:
-          image-ref: ${{ secrets.MON_DOCKERHUB_USERNAME }}/hackboard:${{ github.sha }}
-          format: sarif
-          output: trivy-report.sarif
+  #     - name: Rapport Trivy en SARIF
+  #       uses: aquasecurity/trivy-action@0.69.3
+  #       with:
+  #         image-ref: ${{ secrets.MON_DOCKERHUB_USERNAME }}/hackboard:${{ github.sha }}
+  #         format: sarif
+  #         output: trivy-report.sarif
 
-      - name: Upload rapport GitHub Security
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: trivy-report.sarif
+  #     - name: Upload rapport GitHub Security
+  #       uses: github/codeql-action/upload-sarif@v3
+  #       with:
+  #         sarif_file: trivy-report.sarif
 
 
   # # JOB 7 — DAST (ZAP)
