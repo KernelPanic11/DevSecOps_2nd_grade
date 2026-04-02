@@ -83,7 +83,8 @@ def login():
         password = request.form["password"]
 
         # FAILLE : MD5 sans salt pour comparer
-        hashed = hashlib.md5(password.encode()).hexdigest()
+        hashed = hashlib.m d 5(password.encode()).hexdigest()
+        hashed = PasswordHasher(password)
 
         connexionDB = get_db()
         # FAILLE : injection SQL, concaténation directe sur username
