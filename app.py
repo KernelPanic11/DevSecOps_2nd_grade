@@ -6,7 +6,7 @@ import os
 
 app = Flask(__name__)
 app.secret_key = "supersecret123"  # FAILLE : clé secrète en dur et faible
-#app.secret_key_api = "g h p_SyA1234567890abcdefghijklmnopqrstuvwxyz"  # FAILLE : clé secrète en dur et faible
+# app.secret_key_api = "g h p_SyA1234567890abcdefghijklmnopqrstuvwxyz"  # FAILLE : clé secrète en dur et faible
 
 DATABASE = "hackboard.db"
 
@@ -14,10 +14,12 @@ DATABASE = "hackboard.db"
 # BDD
 # ---------------------------------------------------------------------------
 
+
 def get_db():
     connexionDB = sqlite3.connect(DATABASE)
     connexionDB.row_factory = sqlite3.Row
     return connexionDB
+
 
 def init_db():
     connexionDB = get_db()
@@ -26,9 +28,11 @@ def init_db():
     connexionDB.commit()
     connexionDB.close()
 
+
 # ---------------------------------------------------------------------------
 # ACCUEIL
 # ---------------------------------------------------------------------------
+
 
 @app.route("/")
 def index():
@@ -40,9 +44,11 @@ def index():
     connexionDB.close()
     return render_template("index.html", writeups=writeups)
 
+
 # ---------------------------------------------------------------------------
 # INSCRIPTION
 # ---------------------------------------------------------------------------
+
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -50,17 +56,17 @@ def register():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        email    = request.form["email"]
+        email = request.form["email"]
 
         # FAILLE : MD5 sans salt
-        #hashed = hashlib.m d 5(password.encode()).hexdigest()
+        # hashed = hashlib.m d 5(password.encode()).hexdigest()
         hashed = PasswordHasher(password)
 
         connexionDB = get_db()
         try:
             connexionDB.execute(
                 "INSERT INTO users (username, password, email) VALUES (?, ?, ?)",
-                (username, hashed, email)
+                (username, hashed, email),
             )
             connexionDB.commit()
             return redirect(url_for("login"))
@@ -71,9 +77,11 @@ def register():
 
     return render_template("register.html", error=error)
 
+
 # ---------------------------------------------------------------------------
 # Login
 # ---------------------------------------------------------------------------
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -83,7 +91,7 @@ def login():
         password = request.form["password"]
 
         # FAILLE : MD5 sans salt pour comparer
-        hashed = hashlib.m d 5(password.encode()).hexdigest()
+        # hashed = hashlib.m d 5(password.encode()).hexdigest()
         hashed = PasswordHasher(password)
 
         connexionDB = get_db()
@@ -93,7 +101,7 @@ def login():
         connexionDB.close()
 
         if user:
-            session["user_id"]  = user["id"]
+            session["user_id"] = user["id"]
             session["username"] = user["username"]
             return redirect(url_for("index"))
         else:
@@ -101,34 +109,44 @@ def login():
 
     return render_template("login.html", error=error)
 
+
 # ---------------------------------------------------------------------------
 # Déconnexion
 # ---------------------------------------------------------------------------
+
 
 @app.route("/logout")
 def logout():
     session.clear()
     return redirect(url_for("index"))
 
+
 # ---------------------------------------------------------------------------
 # PROFIL
 # ---------------------------------------------------------------------------
+
 
 @app.route("/profile/<int:user_id>")
 def profile(user_id):
     # FAILLE : IDOR, n'importe qui peut voir n'importe quel profil
     # sans vérifier si c'est bien l'utilisateur connexionDBecté
     connexionDB = get_db()
-    user     = connexionDB.execute("SELECT * FROM users WHERE id = ?", (user_id,)).fetchone()
-    writeups = connexionDB.execute("SELECT * FROM writeups WHERE user_id = ?", (user_id,)).fetchall()
+    user = connexionDB.execute(
+        "SELECT * FROM users WHERE id = ?", (user_id,)
+    ).fetchone()
+    writeups = connexionDB.execute(
+        "SELECT * FROM writeups WHERE user_id = ?", (user_id,)
+    ).fetchall()
     connexionDB.close()
     if not user:
         return "Utilisateur introuvable", 404
     return render_template("profile.html", user=user, writeups=writeups)
 
+
 # ---------------------------------------------------------------------------
 # NOUVEAU WRITE-UP
 # ---------------------------------------------------------------------------
+
 
 @app.route("/writeup/new", methods=["GET", "POST"])
 def new_writeup():
@@ -136,14 +154,14 @@ def new_writeup():
         return redirect(url_for("login"))
 
     if request.method == "POST":
-        title   = request.form["title"]
+        title = request.form["title"]
         content = request.form["content"]
-        tags    = request.form["tags"]
+        tags = request.form["tags"]
 
         connexionDB = get_db()
         connexionDB.execute(
             "INSERT INTO writeups (user_id, title, content, tags) VALUES (?, ?, ?, ?)",
-            (session["user_id"], title, content, tags)
+            (session["user_id"], title, content, tags),
         )
         connexionDB.commit()
         connexionDB.close()
@@ -151,16 +169,18 @@ def new_writeup():
 
     return render_template("new_writeup.html")
 
+
 # ---------------------------------------------------------------------------
 # DÉTAIL WRITE-UP + COMMENTAIRES
 # ---------------------------------------------------------------------------
+
 
 @app.route("/writeup/<int:writeup_id>", methods=["GET", "POST"])
 def writeup(writeup_id):
     connexionDB = get_db()
     wp = connexionDB.execute(
         "SELECT w.*, u.username FROM writeups w JOIN users u ON w.user_id = u.id WHERE w.id = ?",
-        (writeup_id,)
+        (writeup_id,),
     ).fetchone()
 
     if not wp:
@@ -175,32 +195,35 @@ def writeup(writeup_id):
         # et sera affiché avec |safe dans le template
         connexionDB.execute(
             "INSERT INTO comments (writeup_id, user_id, content) VALUES (?, ?, ?)",
-            (writeup_id, session["user_id"], comment)
+            (writeup_id, session["user_id"], comment),
         )
         connexionDB.commit()
 
     comments = connexionDB.execute(
         "SELECT c.*, u.username FROM comments c JOIN users u ON c.user_id = u.id WHERE c.writeup_id = ?",
-        (writeup_id,)
+        (writeup_id,),
     ).fetchall()
     connexionDB.close()
 
     return render_template("writeup.html", writeup=wp, comments=comments)
 
+
 # ---------------------------------------------------------------------------
 # RECHERCHE
 # ---------------------------------------------------------------------------
 
+
 @app.route("/search")
 def search():
     query = request.args.get("q", "")
-    connexionDB  = get_db()
+    connexionDB = get_db()
     # FAILLE : injection SQL dans la recherche
     results = connexionDB.execute(
         f"SELECT w.*, u.username FROM writeups w JOIN users u ON w.user_id = u.id WHERE w.title LIKE '%{query}%' OR w.tags LIKE '%{query}%'"
     ).fetchall()
     connexionDB.close()
     return render_template("search.html", results=results, query=query)
+
 
 # ---------------------------------------------------------------------------
 # LANCEMENT
