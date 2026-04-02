@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import sqlite3
 import hashlib
+from argon2 import PasswordHasher
 import os
 
 app = Flask(__name__)
@@ -52,7 +53,8 @@ def register():
         email    = request.form["email"]
 
         # FAILLE : MD5 sans salt
-        hashed = hashlib.md5(password.encode()).hexdigest()
+        #hashed = hashlib.md5(password.encode()).hexdigest()
+        hashed = PasswordHasher(password)
 
         connexionDB = get_db()
         try:
