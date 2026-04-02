@@ -53,7 +53,7 @@ def register():
         email    = request.form["email"]
 
         # FAILLE : MD5 sans salt
-        #hashed = hashlib.md5(password.encode()).hexdigest()
+        #hashed = hashlib.m d 5(password.encode()).hexdigest()
         hashed = PasswordHasher(password)
 
         connexionDB = get_db()
