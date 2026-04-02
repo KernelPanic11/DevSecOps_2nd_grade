@@ -1,4 +1,4 @@
-name: DevSecOps Pipeline
+name: Ma pipeline DevSecOps
 
 on:
   push:
@@ -24,127 +24,127 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
-  # JOB 2 — Qualité du code
+  # # JOB 2 — Qualité du code
 
-  lint:
-    name: Linting (Flake8)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+  # lint:
+  #   name: Linting (Flake8)
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+  #     - name: Setup Python
+  #       uses: actions/setup-python@v5
+  #       with:
+  #         python-version: '3.11'
 
-      - name: Installer les dépendances
-        run: pip install flake8
+  #     - name: Installer les dépendances
+  #       run: pip install flake8
 
-      - name: Lancer Flake8
-        run: flake8 . --max-line-length=120 --exclude=__pycache__ || true
-
-
-  # JOB 3 — SAST (analyse statique)
-
-  sast:
-    name: SAST (Bandit)
-    runs-on: ubuntu-latest
-    needs: lint
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Installer Bandit
-        run: pip install bandit
-
-      - name: Lancer Bandit
-        run: bandit -r . -f json -o bandit-report.json || true
-
-      - name: Afficher le rapport
-        run: bandit -r . --severity-level medium
-
-      - name: Sauvegarder le rapport
-        uses: actions/upload-artifact@v4
-        with:
-          name: bandit-report
-          path: bandit-report.json
+  #     - name: Lancer Flake8
+  #       run: flake8 . --max-line-length=120 --exclude=__pycache__ || true
 
 
-  # JOB 4 — SCA (dépendances)
+  # # JOB 3 — SAST (analyse statique)
 
-  sca:
-    name: SCA (pip-audit)
-    runs-on: ubuntu-latest
-    needs: lint
-    steps:
-      - uses: actions/checkout@v4
+  # sast:
+  #   name: SAST (Bandit)
+  #   runs-on: ubuntu-latest
+  #   needs: lint
+  #   steps:
+  #     - uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+  #     - name: Setup Python
+  #       uses: actions/setup-python@v5
+  #       with:
+  #         python-version: '3.11'
 
-      - name: Installer pip-audit
-        run: pip install pip-audit
+  #     - name: Installer Bandit
+  #       run: pip install bandit
 
-      - name: Scanner les dépendances
-        run: pip-audit -r requirements.txt
+  #     - name: Lancer Bandit
+  #       run: bandit -r . -f json -o bandit-report.json || true
 
+  #     - name: Afficher le rapport
+  #       run: bandit -r . --severity-level medium
 
-
-  # JOB 5 — Build Docker
-
-  build:
-    name: Build Docker Image
-    runs-on: ubuntu-latest
-    needs: [sast, sca, secrets]
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Login Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Build et Push
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/hackboard:${{ github.sha }}
+  #     - name: Sauvegarder le rapport
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: bandit-report
+  #         path: bandit-report.json
 
 
-  # JOB 6 — Trivy (scan image Docker)
+  # # JOB 4 — SCA (dépendances)
 
-  trivy:
-    name: Trivy (Image Scan)
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Scanner l'image avec Trivy
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: ${{ secrets.DOCKERHUB_USERNAME }}/hackboard:${{ github.sha }}
-          format: table
-          severity: CRITICAL,HIGH
-          exit-code: 0  # ne bloque pas la pipeline pour l'instant
+  # sca:
+  #   name: SCA (pip-audit)
+  #   runs-on: ubuntu-latest
+  #   needs: lint
+  #   steps:
+  #     - uses: actions/checkout@v4
 
-      - name: Rapport Trivy en SARIF
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: ${{ secrets.DOCKERHUB_USERNAME }}/hackboard:${{ github.sha }}
-          format: sarif
-          output: trivy-report.sarif
+  #     - name: Setup Python
+  #       uses: actions/setup-python@v5
+  #       with:
+  #         python-version: '3.11'
 
-      - name: Upload rapport GitHub Security
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: trivy-report.sarif
+  #     - name: Installer pip-audit
+  #       run: pip install pip-audit
+
+  #     - name: Scanner les dépendances
+  #       run: pip-audit -r requirements.txt
+
+
+
+  # # JOB 5 — Build Docker
+
+  # build:
+  #   name: Build Docker Image
+  #   runs-on: ubuntu-latest
+  #   needs: [sast, sca, secrets]
+  #   steps:
+  #     - uses: actions/checkout@v4
+
+  #     - name: Login Docker Hub
+  #       uses: docker/login-action@v3
+  #       with:
+  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
+  #         password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  #     - name: Build et Push
+  #       uses: docker/build-push-action@v5
+  #       with:
+  #         context: .
+  #         push: true
+  #         tags: ${{ secrets.DOCKERHUB_USERNAME }}/hackboard:${{ github.sha }}
+
+
+  # # JOB 6 — Trivy (scan image Docker)
+
+  # trivy:
+  #   name: Trivy (Image Scan)
+  #   runs-on: ubuntu-latest
+  #   needs: build
+  #   steps:
+  #     - name: Scanner l'image avec Trivy
+  #       uses: aquasecurity/trivy-action@master
+  #       with:
+  #         image-ref: ${{ secrets.DOCKERHUB_USERNAME }}/hackboard:${{ github.sha }}
+  #         format: table
+  #         severity: CRITICAL,HIGH
+  #         exit-code: 0  # ne bloque pas la pipeline pour l'instant
+
+  #     - name: Rapport Trivy en SARIF
+  #       uses: aquasecurity/trivy-action@master
+  #       with:
+  #         image-ref: ${{ secrets.DOCKERHUB_USERNAME }}/hackboard:${{ github.sha }}
+  #         format: sarif
+  #         output: trivy-report.sarif
+
+  #     - name: Upload rapport GitHub Security
+  #       uses: github/codeql-action/upload-sarif@v3
+  #       with:
+  #         sarif_file: trivy-report.sarif
 
 
   # # JOB 7 — DAST (ZAP)
