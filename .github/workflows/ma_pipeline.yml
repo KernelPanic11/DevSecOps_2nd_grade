@@ -67,7 +67,7 @@ jobs:
         run: bandit -r . -f json -o bandit-report.json || true
 
       - name: Afficher le rapport
-        run: bandit -r . --severity-level CRITICAL
+        run: bandit -r . --severity-level high
 
       - name: Sauvegarder le rapport
         uses: actions/upload-artifact@v4
