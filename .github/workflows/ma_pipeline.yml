@@ -97,34 +97,34 @@ jobs:
         run: pip-audit -r requirements.txt
 
 
-  # # JOB 5 — Image Scanning pré-build
-  # prebuild:
-  #   name: Image Scanning pré-build
-  #   runs-on: ubuntu-latest
-  #   needs: [sast, sca, secrets]
-  #   steps:
-  #     - uses: actions/checkout@v4
+  # JOB 5 — Image Scanning pré-build
+  prebuild:
+    name: Image Scanning pré-build
+    runs-on: ubuntu-latest
+    needs: [sast, sca, secrets]
+    steps:
+      - uses: actions/checkout@v4
 
-  #     - name: Scanning Dockerfile avec Trivy
-  #       # https://github.com/aquasecurity/trivy-action/releases
-  #       uses: aquasecurity/trivy-action@v0.35.0
-  #       with:
-  #         # fs ou config pour plus précis
-  #         scan-type: 'fs' # scan dépendances (npm, pip, etc.), secrets, misconfigurations (Dockerfile, Kubernetes, Terraform, ...)
-  #         scan-ref: '.' # scan recursif
-  #         format: 'table' # ou bien json / sarif
-  #         exit-code: '1' # -> 256
-  #         severity: 'CRITICAL,HIGH'
+      - name: Scanning Dockerfile avec Trivy
+        # https://github.com/aquasecurity/trivy-action/releases
+        uses: aquasecurity/trivy-action@v0.35.0
+        with:
+          # fs ou config pour plus précis
+          scan-type: 'fs' # scan dépendances (npm, pip, etc.), secrets, misconfigurations (Dockerfile, Kubernetes, Terraform, ...)
+          scan-ref: '.' # scan recursif
+          format: 'table' # ou bien json / sarif
+          exit-code: '130' # -> 256
+          severity: 'CRITICAL,HIGH'
       
-  #     # - name: Scanning Dockerfile avec Trivy
-  #     #   uses: aquasecurity/trivy-action@v0.35.0
-  #     #   with:
-  #     #     # fs ou config pour plus précis
-  #     #     scan-type: 'config' # scan dépendances (npm, pip, etc.), secrets, misconfigurations (Dockerfile, Kubernetes, Terraform, ...)
-  #     #     scan-ref: '.' # scan recursif
-  #     #     format: 'table' # ou bien json / sarif
-  #     #     exit-code: '1' # -> 256
-  #     #     severity: 'CRITICAL,HIGH'
+      # - name: Scanning Dockerfile avec Trivy
+      #   uses: aquasecurity/trivy-action@v0.35.0
+      #   with:
+      #     # fs ou config pour plus précis
+      #     scan-type: 'config' # scan dépendances (npm, pip, etc.), secrets, misconfigurations (Dockerfile, Kubernetes, Terraform, ...)
+      #     scan-ref: '.' # scan recursif
+      #     format: 'table' # ou bien json / sarif
+      #     exit-code: '1' # -> 256
+      #     severity: 'CRITICAL,HIGH'
 
 
 
