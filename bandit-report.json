@@ -1,37 +1,37 @@
 {
   "errors": [],
-  "generated_at": "2026-04-03T08:07:09Z",
+  "generated_at": "2026-04-03T13:34:27Z",
   "metrics": {
     "./app.py": {
       "CONFIDENCE.HIGH": 2,
       "CONFIDENCE.LOW": 1,
-      "CONFIDENCE.MEDIUM": 4,
+      "CONFIDENCE.MEDIUM": 5,
       "CONFIDENCE.UNDEFINED": 0,
       "SEVERITY.HIGH": 3,
-      "SEVERITY.LOW": 1,
+      "SEVERITY.LOW": 2,
       "SEVERITY.MEDIUM": 3,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 136,
+      "loc": 137,
       "nosec": 0,
       "skipped_tests": 0
     },
     "_totals": {
       "CONFIDENCE.HIGH": 2,
       "CONFIDENCE.LOW": 1,
-      "CONFIDENCE.MEDIUM": 4,
+      "CONFIDENCE.MEDIUM": 5,
       "CONFIDENCE.UNDEFINED": 0,
       "SEVERITY.HIGH": 3,
-      "SEVERITY.LOW": 1,
+      "SEVERITY.LOW": 2,
       "SEVERITY.MEDIUM": 3,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 136,
+      "loc": 137,
       "nosec": 0,
       "skipped_tests": 0
     }
   },
   "results": [
     {
-      "code": "61         # FAILLE : MD5 sans salt\n62         hashed = hashlib.md5(password.encode()).hexdigest()\n63         # hashed = PasswordHasher(password)\n",
+      "code": "62         # FAILLE : MD5 sans salt\n63         hashed = hashlib.md5(password.encode()).hexdigest()\n64         # hashed = PasswordHasher(password)\n",
       "col_offset": 17,
       "end_col_offset": 47,
       "filename": "./app.py",
@@ -42,16 +42,16 @@
       },
       "issue_severity": "HIGH",
       "issue_text": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
-      "line_number": 62,
+      "line_number": 63,
       "line_range": [
-        62
+        63
       ],
       "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b324_hashlib.html",
       "test_id": "B324",
       "test_name": "hashlib"
     },
     {
-      "code": "93         # FAILLE : MD5 sans salt pour comparer\n94         hashed = hashlib.md5(password.encode()).hexdigest()\n95         # hashed = PasswordHasher(password)\n",
+      "code": "94         # FAILLE : MD5 sans salt pour comparer\n95         hashed = hashlib.md5(password.encode()).hexdigest()\n96         # hashed = PasswordHasher(password)\n",
       "col_offset": 17,
       "end_col_offset": 47,
       "filename": "./app.py",
@@ -62,16 +62,16 @@
       },
       "issue_severity": "HIGH",
       "issue_text": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
-      "line_number": 94,
+      "line_number": 95,
       "line_range": [
-        94
+        95
       ],
       "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b324_hashlib.html",
       "test_id": "B324",
       "test_name": "hashlib"
     },
     {
-      "code": "98         # FAILLE : injection SQL, concat\u00e9nation directe sur username\n99         query = f\"SELECT * FROM users WHERE username = '{username}' AND password = '{hashed}'\"\n100         user = connexionDB.execute(query).fetchone()\n",
+      "code": "99         # FAILLE : injection SQL, concat\u00e9nation directe sur username\n100         query = f\"SELECT * FROM users WHERE username = '{username}' AND password = '{hashed}'\"\n101         user = connexionDB.execute(query).fetchone()\n",
       "col_offset": 18,
       "end_col_offset": 56,
       "filename": "./app.py",
@@ -82,16 +82,16 @@
       },
       "issue_severity": "MEDIUM",
       "issue_text": "Possible SQL injection vector through string-based query construction.",
-      "line_number": 99,
+      "line_number": 100,
       "line_range": [
-        99
+        100
       ],
       "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b608_hardcoded_sql_expressions.html",
       "test_id": "B608",
       "test_name": "hardcoded_sql_expressions"
     },
     {
-      "code": "221     results = connexionDB.execute(\n222         f\"SELECT w.*, u.username FROM writeups w JOIN users u ON w.user_id = u.id WHERE w.title LIKE '%{query}%' OR w.tags LIKE '%{query}%'\"\n223     ).fetchall()\n",
+      "code": "222     results = connexionDB.execute(\n223         f\"SELECT w.*, u.username FROM writeups w JOIN users u ON w.user_id = u.id WHERE w.title LIKE '%{query}%' OR w.tags LIKE '%{query}%'\"\n224     ).fetchall()\n",
       "col_offset": 10,
       "end_col_offset": 103,
       "filename": "./app.py",
@@ -102,16 +102,16 @@
       },
       "issue_severity": "MEDIUM",
       "issue_text": "Possible SQL injection vector through string-based query construction.",
-      "line_number": 222,
+      "line_number": 223,
       "line_range": [
-        222
+        223
       ],
       "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b608_hardcoded_sql_expressions.html",
       "test_id": "B608",
       "test_name": "hardcoded_sql_expressions"
     },
     {
-      "code": "235     # FAILLE : debug=True en production\n236     app.run(host=\"0.0.0.0\", port=5000, debug=True)\n",
+      "code": "236     # FAILLE : debug=True en production\n237     app.run(host=\"0.0.0.0\", port=5000, debug=True)\n",
       "col_offset": 4,
       "end_col_offset": 50,
       "filename": "./app.py",
@@ -122,16 +122,16 @@
       },
       "issue_severity": "HIGH",
       "issue_text": "A Flask app appears to be run with debug=True, which exposes the Werkzeug debugger and allows the execution of arbitrary code.",
-      "line_number": 236,
+      "line_number": 237,
       "line_range": [
-        236
+        237
       ],
       "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b201_flask_debug_true.html",
       "test_id": "B201",
       "test_name": "flask_debug_true"
     },
     {
-      "code": "235     # FAILLE : debug=True en production\n236     app.run(host=\"0.0.0.0\", port=5000, debug=True)\n",
+      "code": "236     # FAILLE : debug=True en production\n237     app.run(host=\"0.0.0.0\", port=5000, debug=True)\n",
       "col_offset": 17,
       "end_col_offset": 26,
       "filename": "./app.py",
@@ -142,9 +142,9 @@
       },
       "issue_severity": "MEDIUM",
       "issue_text": "Possible binding to all interfaces.",
-      "line_number": 236,
+      "line_number": 237,
       "line_range": [
-        236
+        237
       ],
       "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b104_hardcoded_bind_all_interfaces.html",
       "test_id": "B104",
