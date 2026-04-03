@@ -105,11 +105,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Scanning Dockerfile
+      - name: Scanning Dockerfile avec Trivy
         uses: aquasecurity/trivy-action@0.69.3
-        run: |
-          trivy config --exit-code 0 Dockerfile \
-          && trivy image .
+        with:
+          # fs ou config pour plus précis
+          scan-type: 'fs' # scan dépendances (npm, pip, etc.), secrets, misconfigurations (Dockerfile, Kubernetes, Terraform, ...)
+          scan-ref: '.' # scan recursif
+          format: 'table' # ou bien json / sarif
+          exit-code: '1' # -> 256
+          severity: 'CRITICAL,HIGH'
+      
+      # - name: Scanning Dockerfile avec Trivy
+      #   uses: aquasecurity/trivy-action@0.69.3
+      #   with:
+      #     # fs ou config pour plus précis
+      #     scan-type: 'config' # scan dépendances (npm, pip, etc.), secrets, misconfigurations (Dockerfile, Kubernetes, Terraform, ...)
+      #     scan-ref: '.' # scan recursif
+      #     format: 'table' # ou bien json / sarif
+      #     exit-code: '1' # -> 256
+      #     severity: 'CRITICAL,HIGH'
+
 
 
 
@@ -145,8 +160,21 @@ jobs:
 
   # JOB 6 — Trivy (scan image Docker)
 
-  # trivy:
-  #   name: Trivy (Image Scan)
+  postbuild:
+    name: Image Scanning post-build
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Scanner l'image avec Trivy
+        uses: aquasecurity/trivy-action@0.69.3
+        with:
+          image-ref: 'hackboard:${{ github.sha }}:${{ github.ref_name }}'
+          format: 'table'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'  # 0 = ne bloque pas la pipeline pour l'instant
+
+  # postbuild:
+  #   name: Image Scanning post-build
   #   runs-on: ubuntu-latest
   #   needs: build
   #   steps:
@@ -157,6 +185,7 @@ jobs:
   #         format: table
   #         severity: CRITICAL,HIGH
   #         exit-code: 0  # ne bloque pas la pipeline pour l'instant
+
 
   #     - name: Rapport Trivy en SARIF
   #       uses: aquasecurity/trivy-action@0.69.3
