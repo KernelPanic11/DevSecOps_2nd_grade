@@ -1,12 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import sqlite3
-# import hashlib
+import hashlib
 from argon2 import PasswordHasher
 import os
 
 app = Flask(__name__)
 app.secret_key = "supersecret123"  # FAILLE : clé secrète en dur et faible
-# app.secret_key_api = "g h p_SyA1234567890abcdefghijklmnopqrstuvwxyz"  # FAILLE : clé secrète en dur et faible
+app.secret_key_api = "ghp_SyA1234567890abcdefghijklmnopqrstuvwxyz"  # FAILLE : clé secrète en dur et faible
 
 DATABASE = "hackboard.db"
 
@@ -59,8 +59,8 @@ def register():
         email = request.form["email"]
 
         # FAILLE : MD5 sans salt
-        # hashed = hashlib.md5(password.encode()).hexdigest()
-        hashed = PasswordHasher(password)
+        hashed = hashlib.md5(password.encode()).hexdigest()
+        #hashed = PasswordHasher(password)
 
         connexionDB = get_db()
         try:
@@ -91,8 +91,8 @@ def login():
         password = request.form["password"]
 
         # FAILLE : MD5 sans salt pour comparer
-        # hashed = hashlib.md5(password.encode()).hexdigest()
-        hashed = PasswordHasher(password)
+        hashed = hashlib.md5(password.encode()).hexdigest()
+        # hashed = PasswordHasher(password)
 
         connexionDB = get_db()
         # FAILLE : injection SQL, concaténation directe sur username
@@ -233,4 +233,5 @@ if __name__ == "__main__":
     if not os.path.exists(DATABASE):
         init_db()
     # FAILLE : debug=True en production
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5000, debug=True)
+

@@ -22,7 +22,7 @@ jobs:
         uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          #GITHUB_TOKEN: github_pat_29837294ihefg290jihE320jih
+          
 
 
   # # JOB 2 — Qualité du code
@@ -113,7 +113,7 @@ jobs:
   #         scan-type: 'fs' # scan dépendances (npm, pip, etc.), secrets, misconfigurations (Dockerfile, Kubernetes, Terraform, ...)
   #         scan-ref: '.' # scan recursif
   #         format: 'table' # ou bien json / sarif
-  #         exit-code: '130' # -> 256
+  #         exit-code: '1' # -> 256
   #         severity: 'CRITICAL,HIGH'
       
   #     # - name: Scanning Dockerfile avec Trivy
@@ -129,29 +129,33 @@ jobs:
 
 
 
+  # # JOB 5 — Build Docker
 
-  # JOB 5 — Build Docker
+  # build:
+  #   name: Build Docker Image
+  #   runs-on: ubuntu-latest
+  #   needs: prebuild
+  #   steps:
+  #     - uses: actions/checkout@v4
 
-  build:
-    name: Build Docker Image
-    runs-on: ubuntu-latest
-    # needs: prebuild
-    steps:
-      - uses: actions/checkout@v4
+  #     - name: Login Docker Hub
+  #       uses: docker/login-action@v3
+  #       with:
+  #         username: ${{ secrets.MON_DOCKERHUB_USERNAME }}
+  #         password: ${{ secrets.MON_DOCKERHUB_TOKEN }}
 
-      - name: Login Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.MON_DOCKERHUB_USERNAME }}
-          password: ${{ secrets.MON_DOCKERHUB_TOKEN }}
+  #     - name: Build à l'ancienne
+  #       run: |
+  #         docker build \
+  #         -t hackboard:${{ github.sha }} \
+  #         -t hackboard:${{ github.ref_name }} .
 
-
-      - name: Build et Push
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: ${{ secrets.MON_DOCKERHUB_USERNAME }}/hackboard:v1
+  #     # - name: Build et Push
+  #     #   uses: docker/build-push-action@v5
+  #     #   with:
+  #     #     context: .
+  #     #     push: true
+  #     #     tags: ${{ secrets.MON_DOCKERHUB_USERNAME }}/hackboard:${{ github.sha }} myimage:${{ github.ref_name }}
 
 
 
