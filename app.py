@@ -1,8 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import sqlite3
-import hashlib
-
-# from argon2 import PasswordHasher
+#import hashlib
+from argon2 import PasswordHasher
 import os
 
 app = Flask(__name__)
@@ -60,8 +59,8 @@ def register():
         email = request.form["email"]
 
         # FAILLE : MD5 sans salt
-        hashed = hashlib.md5(password.encode()).hexdigest()
-        # hashed = PasswordHasher(password)
+        # hashed = hashlib.md5(password.encode()).hexdigest()
+        hashed = PasswordHasher(password)
 
         connexionDB = get_db()
         try:
@@ -92,8 +91,8 @@ def login():
         password = request.form["password"]
 
         # FAILLE : MD5 sans salt pour comparer
-        hashed = hashlib.md5(password.encode()).hexdigest()
-        # hashed = PasswordHasher(password)
+        # hashed = hashlib.md5(password.encode()).hexdigest()
+        hashed = PasswordHasher(password)
 
         connexionDB = get_db()
         # FAILLE : injection SQL, concaténation directe sur username
@@ -234,4 +233,4 @@ if __name__ == "__main__":
     if not os.path.exists(DATABASE):
         init_db()
     # FAILLE : debug=True en production
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000)
