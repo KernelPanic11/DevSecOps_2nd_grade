@@ -106,7 +106,8 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Scanning Dockerfile avec Trivy
-        uses: aquasecurity/trivy-action@0.69.3
+        # https://github.com/aquasecurity/trivy-action/releases
+        uses: aquasecurity/trivy-action@v0.35.0
         with:
           # fs ou config pour plus précis
           scan-type: 'fs' # scan dépendances (npm, pip, etc.), secrets, misconfigurations (Dockerfile, Kubernetes, Terraform, ...)
@@ -116,7 +117,7 @@ jobs:
           severity: 'CRITICAL,HIGH'
       
       # - name: Scanning Dockerfile avec Trivy
-      #   uses: aquasecurity/trivy-action@0.69.3
+      #   uses: aquasecurity/trivy-action@v0.35.0
       #   with:
       #     # fs ou config pour plus précis
       #     scan-type: 'config' # scan dépendances (npm, pip, etc.), secrets, misconfigurations (Dockerfile, Kubernetes, Terraform, ...)
@@ -166,7 +167,7 @@ jobs:
     needs: build
     steps:
       - name: Scanner l'image avec Trivy
-        uses: aquasecurity/trivy-action@0.69.3
+        uses: aquasecurity/trivy-action@v0.35.0
         with:
           image-ref: 'hackboard:${{ github.sha }}:${{ github.ref_name }}'
           format: 'table'
@@ -179,7 +180,7 @@ jobs:
   #   needs: build
   #   steps:
   #     - name: Scanner l'image avec Trivy
-  #       uses: aquasecurity/trivy-action@0.69.3
+  #       uses: aquasecurity/trivy-action@v0.35.0
   #       with:
   #         image-ref: ${{ secrets.MON_DOCKERHUB_USERNAME }}/hackboard:${{ github.sha }}
   #         format: table
@@ -188,7 +189,7 @@ jobs:
 
 
   #     - name: Rapport Trivy en SARIF
-  #       uses: aquasecurity/trivy-action@0.69.3
+  #       uses: aquasecurity/trivy-action@v0.35.0
   #       with:
   #         image-ref: ${{ secrets.MON_DOCKERHUB_USERNAME }}/hackboard:${{ github.sha }}
   #         format: sarif
