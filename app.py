@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import sqlite3
 import hashlib
-from argon2 import PasswordHasher
+
+# from argon2 import PasswordHasher
 import os
 
 app = Flask(__name__)
@@ -60,7 +61,7 @@ def register():
 
         # FAILLE : MD5 sans salt
         hashed = hashlib.md5(password.encode()).hexdigest()
-        #hashed = PasswordHasher(password)
+        # hashed = PasswordHasher(password)
 
         connexionDB = get_db()
         try:
@@ -234,4 +235,3 @@ if __name__ == "__main__":
         init_db()
     # FAILLE : debug=True en production
     app.run(host="0.0.0.0", port=5000, debug=True)
-
