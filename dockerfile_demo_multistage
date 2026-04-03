@@ -1,4 +1,4 @@
-# Stage 1 : Build
+# Stage 1 : Build - FORGE
 FROM python:3.12-slim AS builder
 
 RUN useradd -m appuser

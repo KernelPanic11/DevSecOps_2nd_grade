@@ -129,33 +129,29 @@ jobs:
 
 
 
-  # # JOB 5 — Build Docker
 
-  # build:
-  #   name: Build Docker Image
-  #   runs-on: ubuntu-latest
-  #   needs: prebuild
-  #   steps:
-  #     - uses: actions/checkout@v4
+  # JOB 5 — Build Docker
 
-  #     - name: Login Docker Hub
-  #       uses: docker/login-action@v3
-  #       with:
-  #         username: ${{ secrets.MON_DOCKERHUB_USERNAME }}
-  #         password: ${{ secrets.MON_DOCKERHUB_TOKEN }}
+  build:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    needs: prebuild
+    steps:
+      - uses: actions/checkout@v4
 
-  #     - name: Build à l'ancienne
-  #       run: |
-  #         docker build \
-  #         -t hackboard:${{ github.sha }} \
-  #         -t hackboard:${{ github.ref_name }} .
+      - name: Login Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.MON_DOCKERHUB_USERNAME }}
+          password: ${{ secrets.MON_DOCKERHUB_TOKEN }}
 
-  #     # - name: Build et Push
-  #     #   uses: docker/build-push-action@v5
-  #     #   with:
-  #     #     context: .
-  #     #     push: true
-  #     #     tags: ${{ secrets.MON_DOCKERHUB_USERNAME }}/hackboard:${{ github.sha }} myimage:${{ github.ref_name }}
+
+      - name: Build et Push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.MON_DOCKERHUB_USERNAME }}/hackboard:${{ github.sha }} myimage:${{ github.ref_name }}
 
 
 
