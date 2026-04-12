@@ -21,10 +21,10 @@ jobs:
         id: filter
         with:
           filters: |
-          python:
-            - '**/*.py'
-          deps:
-            - 'requirements.txt'
+            python:
+              - '**/*.py'
+            deps:
+              - 'requirements.txt'
         
 
   # JOB 1 : Secrets scanning
