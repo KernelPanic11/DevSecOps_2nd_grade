@@ -1,0 +1,38 @@
+# Stage 1 : Build - FORGE
+FROM python:3.12-slim AS builder
+
+RUN useradd -m appuser
+
+COPY pyproject.toml poetry.lock ./
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends gcc libpq-dev && \
+    rm -rf /var/lib/apt/lists/*
+
+# Installer les dépendances Python
+RUN pip install --no-cache-dir -U pip setuptools wheel && \
+    pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+# Option : Build binaire ou préparer l’app (si nécessaire)
+# RUN python setup.py build  # exemple
+
+
+
+
+# Stage 2 : Image finale
+FROM gcr.io/distroless/python3-debian12
+
+RUN adduser --system --group appuser
+USER appuser
+
+WORKDIR /app
+
+# Copier l'artefact (notre "épée") depuis le build (la "forge")
+COPY --from=builder /app /app
+
+# Entrypoint unique
+ENTRYPOINT ["/usr/local/bin/python", "-m", "app.main"]
+
+EXPOSE 8080

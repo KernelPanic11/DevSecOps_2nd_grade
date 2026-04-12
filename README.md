@@ -1,6 +1,6 @@
 # 💀 HackBoard
 
-Réseau social pour pentesters — application de démonstration DevSecOps.
+Réseau social pour pentesters. Application de démonstration DevSecOps.
 
 ## Lancement en une commande
 
@@ -8,7 +8,7 @@ Réseau social pour pentesters — application de démonstration DevSecOps.
 docker-compose up --build
 ```
 
-Puis ouvre http://localhost:5000
+Puis ouvrir http://localhost:5000
 
 ## Comptes de démo
 

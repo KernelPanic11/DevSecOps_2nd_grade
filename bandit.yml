@@ -1,0 +1,2 @@
+# FILE: bandit.yml
+exclude_dirs: ["venv", "__pycache__"]
