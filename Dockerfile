@@ -9,6 +9,4 @@ COPY . .
 
 EXPOSE 5000
 
-ENV MY_SUPER_SECRET_HERE=""
-
 CMD ["python", "app.py"]
