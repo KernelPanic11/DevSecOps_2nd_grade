@@ -223,14 +223,15 @@ def search():
     connexionDB.close()
     return render_template("search.html", results=results, query=query)
 
+
 # ---------------------------------------------------------------------------
-# RECHERCHE
+# HEALTHCHECK
 # ---------------------------------------------------------------------------
 
 
-@app.route("/sante")
-def health():
-    return "OK", 200
+# @app.route("/sante")
+# def health():
+#     return "OK", 200
 
 
 # ---------------------------------------------------------------------------
