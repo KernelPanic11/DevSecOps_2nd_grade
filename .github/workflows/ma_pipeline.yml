@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read  # = checkout
+  packages: write  # Pour GHCR
+
 jobs:
 
   # JOB 0 : Detection de changements
@@ -164,8 +168,12 @@ jobs:
       - name: Login Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.MON_DOCKERHUB_USERNAME }}
-          password: ${{ secrets.MON_DOCKERHUB_TOKEN }}
+          # Dockerhub
+          # username: ${{ secrets.MON_DOCKERHUB_USERNAME }}
+          # password: ${{ secrets.MON_DOCKERHUB_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       # - name: Build à l'ancienne
       #   run: |
@@ -178,7 +186,9 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.MON_DOCKERHUB_USERNAME }}/hackboard:${{ github.sha }}-${{ github.ref_name }}
+          # Dockerhub
+          # tags: ${{ secrets.MON_DOCKERHUB_USERNAME }}/hackboard:${{ github.sha }}-${{ github.ref_name }}
+          tags: ghcr.io/${{ github.repository_owner }}/hackboard:${{ github.sha }}-${{ github.ref_name }}
 
 
 
