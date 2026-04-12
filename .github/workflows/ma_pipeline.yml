@@ -275,6 +275,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Deploiement en cours
-        run : curl -X POST ${{ secrets.MY_RENDER_HOOK }}?image=ghcr.io/${{ vars.MY_GHCR_REGISTRY_OWNER }}/hackboard:${{ github.sha }}
+        run : curl -X POST ${{ secrets.MY_RENDER_HOOK }}
+        #?image=ghcr.io/${{ vars.MY_GHCR_REGISTRY_OWNER }}/hackboard:${{ github.sha }}
 
 
