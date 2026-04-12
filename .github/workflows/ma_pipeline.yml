@@ -188,7 +188,9 @@ jobs:
           push: true
           # Dockerhub
           # tags: ${{ secrets.MON_DOCKERHUB_USERNAME }}/hackboard:${{ github.sha }}-${{ github.ref_name }}
-          tags: ghcr.io/${{ github.repository_owner }}/hackboard:${{ github.sha }}-${{ github.ref_name }}
+          tags: |
+            ghcr.io/${{ vars.MY_GHCR_REGISTRY_OWNER }}/hackboard:${{ github.sha }}
+            ghcr.io/${{ vars.MY_GHCR_REGISTRY_OWNER }}/hackboard:${{ github.ref_name }}
 
 
 
