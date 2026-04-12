@@ -130,48 +130,48 @@ jobs:
 
   # # JOB 5 — Build Docker
 
-  # build:
-  #   name: Build Docker Image
-  #   runs-on: ubuntu-latest
-  #   needs: prebuild
-  #   steps:
-  #     - uses: actions/checkout@v4
+  build:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    needs: prebuild
+    steps:
+      - uses: actions/checkout@v4
 
-  #     - name: Login Docker Hub
-  #       uses: docker/login-action@v3
-  #       with:
-  #         username: ${{ secrets.MON_DOCKERHUB_USERNAME }}
-  #         password: ${{ secrets.MON_DOCKERHUB_TOKEN }}
+      - name: Login Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.MON_DOCKERHUB_USERNAME }}
+          password: ${{ secrets.MON_DOCKERHUB_TOKEN }}
 
-  #     - name: Build à l'ancienne
-  #       run: |
-  #         docker build \
-  #         -t hackboard:${{ github.sha }} \
-  #         -t hackboard:${{ github.ref_name }} .
+      - name: Build à l'ancienne
+        run: |
+          docker build \
+          -t hackboard:${{ github.sha }} \
+          -t hackboard:${{ github.ref_name }} .
 
-  #     # - name: Build et Push
-  #     #   uses: docker/build-push-action@v5
-  #     #   with:
-  #     #     context: .
-  #     #     push: true
-  #     #     tags: ${{ secrets.MON_DOCKERHUB_USERNAME }}/hackboard:${{ github.sha }} myimage:${{ github.ref_name }}
+      # - name: Build et Push
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: .
+      #     push: true
+      #     tags: ${{ secrets.MON_DOCKERHUB_USERNAME }}/hackboard:${{ github.sha }} myimage:${{ github.ref_name }}
 
 
 
-  # # JOB 6 — Trivy (scan image Docker)
+  # JOB 6 — Trivy (scan image Docker)
 
-  # postbuild:
-  #   name: Image Scanning post-build
-  #   runs-on: ubuntu-latest
-  #   needs: build
-  #   steps:
-  #     - name: Scanner l'image avec Trivy
-  #       uses: aquasecurity/trivy-action@v0.35.0
-  #       with:
-  #         image-ref: 'hackboard:${{ github.sha }}:${{ github.ref_name }}'
-  #         format: 'table'
-  #         severity: 'CRITICAL,HIGH'
-  #         exit-code: '1'  # 0 = ne bloque pas la pipeline pour l'instant
+  postbuild:
+    name: Image Scanning post-build
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Scanner l'image avec Trivy
+        uses: aquasecurity/trivy-action@v0.35.0
+        with:
+          image-ref: 'hackboard:${{ github.sha }}:${{ github.ref_name }}'
+          format: 'table'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'  # 0 = ne bloque pas la pipeline pour l'instant
 
   # postbuild:
   #   name: Image Scanning post-build
@@ -200,32 +200,32 @@ jobs:
   #         sarif_file: trivy-report.sarif
 
 
-  # # JOB 7 — DAST (ZAP)
+  # JOB 7 — DAST (ZAP)
 
-  # dast:
-  #   name: DAST (OWASP ZAP)
-  #   runs-on: ubuntu-latest
-  #   needs: build
-  #   steps:
-  #     - uses: actions/checkout@v4
+  dast:
+    name: DAST (OWASP ZAP)
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
 
-  #     - name: Lancer l'app pour le scan
-  #       run: |
-  #         docker run -d \
-  #           --name hackboard \
-  #           -p 5000:5000 \
-  #           ${{ secrets.MON_DOCKERHUB_USERNAME }}/hackboard:${{ github.sha }}
-  #         sleep 10  # attendre que l'app démarre
+      - name: Lancer l'app pour le scan
+        run: |
+          docker run -d \
+            --name hackboard \
+            -p 5000:5000 \
+            ${{ secrets.MON_DOCKERHUB_USERNAME }}/hackboard:${{ github.sha }}
+          sleep 10  # attendre que l'app démarre
 
-  #     - name: ZAP Baseline Scan
-  #       uses: zaproxy/action-baseline@v0.12.0
-  #       with:
-  #         target: 'http://localhost:5000'
-  #         rules_file_name: '.zap/rules.tsv'
-  #         cmd_options: '-a'
+      - name: ZAP Baseline Scan
+        uses: zaproxy/action-baseline@v0.12.0
+        with:
+          target: 'http://localhost:5000'
+          rules_file_name: '.zap/rules.tsv'
+          cmd_options: '-a'
 
-  #     - name: Upload rapport ZAP
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: zap-report
-  #         path: report_html.html
+      - name: Upload rapport ZAP
+        uses: actions/upload-artifact@v4
+        with:
+          name: zap-report
+          path: report_html.html

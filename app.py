@@ -5,7 +5,7 @@ from argon2 import PasswordHasher
 import os
 
 app = Flask(__name__)
-app.secret_key = "supersecret123"  # FAILLE : clé secrète en dur et faible
+app.secret_key = ${{ secrets.MY_SUPER_SECRET_HERE }}  # FAILLE FIXED : clé secrète en dur et faible
 app.secret_key_api = "g h p_SyA1234567890abcdefghijklmnopqrstuvwxyz"  # FAILLE : clé secrète en dur et faible
 
 DATABASE = "hackboard.db"
