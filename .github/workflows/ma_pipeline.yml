@@ -231,12 +231,12 @@ jobs:
   #         path: report_html.html
 
 
-    deploy:
-      name: Deploy with Render (Hook)
-      runs-on: ubuntu-latest
-      needs: build
-      steps:
-        - uses: actions/checkout@v4
+  deploy:
+    name: Deploy with Render (Hook)
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
 
-        - name: Deploiement en cours
-          run : curl -X POST ${{ secrets.MY_RENDER_HOOK }} && echo "Deploiement OK !"
+      - name: Deploiement en cours
+        run : curl -X POST ${{ secrets.MY_RENDER_HOOK }} && echo "Deploiement OK !"
